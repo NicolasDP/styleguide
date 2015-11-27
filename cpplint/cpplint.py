@@ -1742,12 +1742,12 @@ def CheckForHeaderGuard(filename, clean_lines, error):
   # Check for "//" comments on endif line.
   ParseNolintSuppressions(filename, raw_lines[endif_linenum], endif_linenum,
                           error)
-  match = Match(r'#endif\s*//\s*' + cppvar + r'(_)?\b', endif)
+  match = Match(r'#endif\s*//(\s*|\s*!\s*)' + cppvar + r'(_)?\b', endif)
   if match:
     if match.group(1) == '_':
       # Issue low severity warning for deprecated double trailing underscore
       error(filename, endif_linenum, 'build/header_guard', 0,
-            '#endif line should be "#endif  // %s"' % cppvar)
+            '#endif line should be "#endif  // [!] %s"' % cppvar)
     return
 
   # Didn't find the corresponding "//" comment.  If this file does not
@@ -1761,12 +1761,12 @@ def CheckForHeaderGuard(filename, clean_lines, error):
       break
 
   if no_single_line_comments:
-    match = Match(r'#endif\s*/\*\s*' + cppvar + r'(_)?\s*\*/', endif)
+    match = Match(r'#endif\s*/\*(\s*|\s*!\s*)' + cppvar + r'(_)?\s*\*/', endif)
     if match:
       if match.group(1) == '_':
         # Low severity warning for double trailing underscore
         error(filename, endif_linenum, 'build/header_guard', 0,
-              '#endif line should be "#endif  /* %s */"' % cppvar)
+              '#endif line should be "#endif  /* [!] %s */"' % cppvar)
       return
 
   # Didn't find anything
