@@ -1028,7 +1028,7 @@ class FileInfo(object):
         return fullname[len(prefix) + 1:]
 
     # Don't know what to do; header guard warnings may be wrong...
-    return fullname
+    return self._filename
 
   def Split(self):
     """Splits the file into the directory, basename, and extension.
